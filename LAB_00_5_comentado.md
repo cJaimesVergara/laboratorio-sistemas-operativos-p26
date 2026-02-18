@@ -467,6 +467,13 @@ ls -la lab0_5_refuerzo_02XXXXX.tgz
 **Entrega:** `lab0_5_refuerzo_02XXXXX.tgz`
 
 ---
+```bash
+find . -maxdepth 1 -mindepth 1 -type d | wc -l
+stat .
+```
+
+
+---
 
 ## Cheatsheet mini
 - Patrones: `*`, `?`
