@@ -19,6 +19,49 @@ Los usarás como:
 
 ---
 
+## Estructura de `access.log` (Nginx, estilo *combined*)
+
+Ejemplo:
+```text
+203.0.113.67 - - [21/Feb/2026:08:40:00 -0600] "POST /api/status HTTP/1.1" 200 68 "-" "Mozilla/5.0_(iPhone)"
+```
+
+| Parte | Ejemplo | Significado |
+|---|---|---|
+| IP del cliente | `203.0.113.67` | IP origen que hizo la petición. |
+| Ident / usuario autenticado | `- -` | Campos históricos: `identd` y “remote user”. Normalmente `-` si no aplica. |
+| Timestamp | `[21/Feb/2026:08:40:00 -0600]` | Fecha/hora de la request + zona horaria. |
+| Request line | `"POST /api/status HTTP/1.1"` | Método + ruta + versión HTTP. |
+| Status code | `200` | Resultado HTTP (éxito/error). |
+| Bytes | `68` | Tamaño de respuesta en bytes (aprox, según config). |
+| Referer | `"-"` | Página de origen (si existe). `-` si no se envió. |
+| User-Agent | `"Mozilla/5.0_(iPhone)"` | Identifica el cliente (navegador/herramienta). |
+
+---
+
+## Estructura de `error.log` (Nginx)
+
+Ejemplo:
+```text
+2026/02/21 10:39:07 [warn]  1876#1876: *3330 upstream response is buffered to a temporary file, client: 192.0.2.55, server: site.local, request: "POST /login HTTP/1.1", upstream: "http://127.0.0.1:3000/login", host: "site.local"
+```
+
+| Parte | Ejemplo | Significado |
+|---|---|---|
+| Timestamp | `2026/02/21 10:39:07` | Fecha/hora del evento. |
+| Nivel | `[warn]` | Severidad (`warn`, `error`, etc.). |
+| Worker PID#TID | `1876#1876` | Proceso/hilo de Nginx que registró el evento. |
+| Connection ID | `*3330` | ID interno de conexión (útil para correlación interna). |
+| Mensaje | `upstream response is buffered to a temporary file` | Nginx tuvo que “bufferizar” la respuesta del upstream a un archivo temporal (suele ocurrir por tamaño/velocidad de respuesta). |
+| Client | `client: 192.0.2.55` | IP del cliente que detonó el evento. |
+| Server | `server: site.local` | Virtual host (bloque `server{}`) que atendió. |
+| Request | `request: "POST /login HTTP/1.1"` | Request line asociada al evento. |
+| Upstream | `upstream: "http://127.0.0.1:3000/login"` | Backend al que Nginx proxyeó (ej. app Node). |
+| Host | `host: "site.local"` | Valor del header Host recibido. |
+
+
+---
+
 ## 0) Preparación
 
 ```bash
