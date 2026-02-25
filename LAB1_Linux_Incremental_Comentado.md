@@ -223,6 +223,18 @@ Extrae `user=...`, ordénalo y deja únicos.
 grep "user=" logs/app.log | cut -d' ' -f4 | sort | uniq
 ```
 
+Si hay error en la detección de las columnas (por más de un espacio consecutivos) usa el comando tr -s ' '
+
+```bash
+# grep filtra líneas con "user="
+# cut corta columnas:
+# -d' ' usa espacio como delimitador
+# -f4 toma el campo 4 (en este log, "user=...")
+# sort ordena para que uniq funcione
+# uniq deja únicos
+grep "user=" logs/app.log | tr -s ' ' | cut -d' ' -f4 | sort | uniq
+```
+
 ### 3.2 Conteo por usuario (ranking)
 ```bash
 # uniq -c cuenta repeticiones (requiere lista ordenada)
