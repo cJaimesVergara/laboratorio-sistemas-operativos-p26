@@ -81,7 +81,7 @@ cp ./LABIR1_nginx_error_large_v3.log  ~/linux-lab/labIR1/logs/error.log  # copia
 
 | Código | Nombre         | Significado en Seguridad |
 |-------:|----------------|--------------------------|
-| 400    | Bad Request    | La solicitud es corrupta. A menudo causada por herramientas de escaneo (fuzzers) mal configuradas o ataques de malformación de paquetes. |
+| 400    | Bad Request    | La solicitud es corrupta. A menudo causada por herramientas de escaneo mal configuradas o ataques de malformación de paquetes. |
 | 401    | Unauthorized   | El usuario intentó acceder a una zona protegida sin credenciales o con credenciales incorrectas. Es el indicador clave de ataques de fuerza bruta. |
 | 403    | Forbidden      | El servidor entiende la petición, pero se niega a autorizarla. Indica que el atacante está intentando acceder a rutas restringidas por el administrador. |
 | 404    | Not Found      | El recurso no existe. En auditorías, un volumen alto indica un escaneo de directorios buscando archivos sensibles como `.env`, `.git` o `config.php`. |
