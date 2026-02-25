@@ -277,7 +277,7 @@ grep "access forbidden by rule" logs/error.log | cut -d' ' -f11 | sort | uniq > 
   echo "7) Herramientas por UA (25 líneas):"; head -n 25 evidencia/09_user_agents_herramientas.txt; echo  # imprime texto/variables
   echo "8) Top 401/403/404:"; echo "---401---"; cat evidencia/10_top_ips_401.txt; echo "---403---"; cat evidencia/11_top_ips_403.txt; echo "---404---"; cat evidencia/12_top_ips_404.txt; echo  # imprime texto/variables
   echo "9) Correlación forbidden (80 líneas):"; head -n 80 evidencia/13_correlacion_forbidden.txt  # imprime texto/variables
-} | tee out/reporte_incidente.txt > evidencia/14_reporte_final.txt  # muestra en pantalla y guarda en archivo con tee
+} | tee -a out/reporte_incidente.txt evidencia/14_reporte_final.txt  # muestra en pantalla y guarda en archivo con tee
 ```
 
 ---
