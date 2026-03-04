@@ -63,7 +63,7 @@ cat > hola_proceso.c <<'EOF'                   # Crea el archivo hola_proceso.c 
 
 int main(void) {                               # Función principal del programa
     printf("Hola, soy un proceso.\n");         # Imprime un mensaje
-    printf("PID: %d\n", getpid());             # Imprime el PID (identificador del proceso)
+    printf("PID: %d\n", getpid());             # Imprime el PID (identificador del proceso), %d = imprime un entero con signo en base 10 (decimal).
     printf("PPID: %d\n", getppid());           # Imprime el PPID (PID del proceso padre)
 
     printf("Voy a dormir 120 segundos. Inspeccióname con /proc.\n"); // Mantiene vivo el proceso para inspeccionarlo
