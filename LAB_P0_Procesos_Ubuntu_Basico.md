@@ -59,7 +59,7 @@ ls -la                                         # Lista contenido actual (debe ve
 ```bash
 cat > hola_proceso.c <<'EOF'                   # Crea el archivo hola_proceso.c pegando el contenido entre EOF...EOF
 #include <stdio.h>                             # Librería estándar de entrada/salida (printf)
-#include <unistd.h>                            # Librerías (getpid, getppid, sleep)
+#include <unistd.h>                            # Librerías UNIX (getpid, getppid, sleep)
 
 int main(void) {                               # Función principal del programa
     printf("Hola, soy un proceso.\n");         # Imprime un mensaje
