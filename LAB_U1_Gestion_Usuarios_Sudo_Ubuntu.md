@@ -366,6 +366,104 @@ ls -lh ../lab_u1_usuarios_evidencia.tar.gz                  # Confirma tamaño y
 
 ---
 
+# Estructura de `/etc/shadow`
+
+`/etc/shadow` tiene **una línea por usuario**, con campos separados por `:`.
+
+## Formato general
+
+```
+usuario:password_hash:lastchg:min:max:warn:inactive:expire:reserved
+```
+
+## Significado de cada campo
+
+### 1. usuario
+Nombre de la cuenta.
+
+### 2. password_hash
+Aquí se guarda el **hash de la contraseña**, nunca la contraseña en texto plano.
+
+Ejemplos comunes:
+
+- `$y$...` → hash usando algoritmo moderno (yescrypt, común en Ubuntu reciente)
+- `$6$...` → hash SHA‑512
+- `!` o `!!` → cuenta bloqueada o sin contraseña válida
+- `*` → login con contraseña deshabilitado
+
+### 3. lastchg
+Número de **días desde 1 enero de 1970 (Unix epoch)** en que se cambió la contraseña por última vez.
+
+### 4. min
+Número mínimo de días que deben pasar antes de poder cambiar nuevamente la contraseña.
+
+### 5. max
+Número máximo de días que puede durar la contraseña antes de **expirar**.
+
+### 6. warn
+Número de días antes de la expiración en que el sistema **avisa al usuario**.
+
+### 7. inactive
+Número de días después de que la contraseña expiró durante los cuales la cuenta sigue permitiendo cambio de contraseña.
+
+### 8. expire
+Fecha absoluta (en días desde 1970) en que la **cuenta expira completamente**.
+
+### 9. reserved
+Campo reservado para uso futuro (normalmente vacío).
+
+---
+
+# Ejemplo
+
+```
+alumno1:$y$j9T$abc123...:20123:0:99999:7:::
+```
+
+Interpretación conceptual:
+
+- `alumno1` → nombre de usuario
+- `$y$j9T$abc123...` → hash de la contraseña
+- `20123` → último cambio de contraseña
+- `0` → puede cambiarla inmediatamente
+- `99999` → prácticamente no expira pronto
+- `7` → advertencia 7 días antes de expirar
+
+---
+
+# Importante
+
+- `/etc/shadow` **contiene hashes de contraseñas**, por lo que normalmente **solo root puede leerlo**.
+- No debe copiarse en reportes ni compartirse públicamente.
+
+---
+
+# Relación con `/etc/passwd`
+
+| Archivo | Contenido |
+|-------|-------|
+| `/etc/passwd` | Información pública del usuario (nombre, UID, GID, home, shell) |
+| `/etc/shadow` | Hash de contraseña y políticas de expiración |
+
+---
+
+# Ver el archivo
+
+Ver todo (solo root):
+
+```bash
+sudo cat /etc/shadow
+```
+
+Ver solo un usuario:
+
+```bash
+sudo grep '^alumno1:' /etc/shadow
+```
+
+
+---
+
 ## Preguntas de reflexión (para reporte)
 
 
