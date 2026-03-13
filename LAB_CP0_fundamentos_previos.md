@@ -257,6 +257,13 @@ EOF
 ## Idea clave
 Los hilos comparten memoria de forma natural porque viven dentro del mismo proceso.
 
+---
+
+
+> Este código crea dos hilos (`t1` y `t2`) usando la biblioteca `pthread`. Ambos hilos ejecutan la misma función llamada `tarea`. Después de crearlos, el hilo principal usa `pthread_join` para esperar a que ambos terminen antes de continuar. Esto permite observar concurrencia, ya que los dos hilos pueden ejecutarse de forma intercalada, y también muestra una forma básica de sincronización al final de su ejecución.
+
+---
+
 ## Código base: `pthread_demo.c`
 
 ```bash
@@ -541,66 +548,4 @@ void *tarea(void *arg) {
 
 ---
 
-## ¿Qué conceptos pueden observar los alumnos con este código?
 
-Este fragmento permite enseñar varios conceptos importantes:
-
-### 1. Creación de hilos
-Cómo un proceso puede tener varios flujos de ejecución al mismo tiempo.
-
-### 2. Concurrencia
-Los hilos pueden avanzar “a la vez” o intercalarse.
-
-### 3. No determinismo
-El orden exacto de ejecución puede cambiar en cada corrida.
-
-### 4. Sincronización básica
-`pthread_join` permite esperar a que un hilo termine.
-
----
-
-## Lo que este código **sí hace**
-
-- crea dos hilos;
-- ambos ejecutan la misma función;
-- el hilo principal espera a que ambos terminen.
-
----
-
-## Lo que este código **no hace**
-
-Este fragmento **no protege variables compartidas**.
-
-Si la función `tarea` modifica una variable global compartida, puede haber condiciones de carrera si no se usan mecanismos adicionales, como:
-
-- mutex,
-- semáforos,
-- variables de condición.
-
-Es decir, `pthread_join` **espera el final**, pero **no evita conflictos durante la ejecución concurrente**.
-
----
-
-## Explicación breve para poner en el laboratorio
-
-Puedes usar este texto directamente:
-
-> Este código crea dos hilos (`t1` y `t2`) usando la biblioteca `pthread`. Ambos hilos ejecutan la misma función llamada `tarea`. Después de crearlos, el hilo principal usa `pthread_join` para esperar a que ambos terminen antes de continuar. Esto permite observar concurrencia, ya que los dos hilos pueden ejecutarse de forma intercalada, y también muestra una forma básica de sincronización al final de su ejecución.
-
----
-
-## Resumen final
-
-En resumen, este código:
-
-- declara dos identificadores de hilo;
-- crea dos hilos que ejecutan la función `tarea`;
-- deja que ambos trabajen concurrentemente;
-- espera a que ambos finalicen antes de que el programa continúe o termine.
-
-Es un ejemplo básico y muy útil para introducir a los alumnos en el uso de hilos POSIX en C.
-
-
-
-
----
