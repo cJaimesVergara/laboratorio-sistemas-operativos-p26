@@ -262,6 +262,8 @@ Los hilos comparten memoria de forma natural porque viven dentro del mismo proce
 
 > Este código crea dos hilos (`t1` y `t2`) usando la biblioteca `pthread`. Ambos hilos ejecutan la misma función llamada `tarea`. Después de crearlos, el hilo principal usa `pthread_join` para esperar a que ambos terminen antes de continuar. Esto permite observar concurrencia, ya que los dos hilos pueden ejecutarse de forma intercalada, y también muestra una forma básica de sincronización al final de su ejecución.
 
+> void* tarea(void* arg) { } define una función llamada tarea con el formato requerido por pthread. Recibe un argumento genérico (arg) y devuelve un puntero genérico (void*).
+
 ---
 
 ## Código base: `pthread_demo.c`
@@ -272,6 +274,7 @@ cat > pthread_demo.c <<'EOF'
 #include <pthread.h>                              // pthread_create, pthread_join
 
 int contador = 0;                                 // variable global compartida por los hilos
+
 
 void* tarea(void* arg) {                          // función que ejecuta cada hilo
     for (int i = 0; i < 100000; i++) {            // repite muchas veces
