@@ -324,4 +324,283 @@ tar -czf lab_cp0_02XXXXX.tar.gz evidencia     # comprime evidencias con ID
 ls -lh lab_cp0_02XXXXX.tar.gz                 # confirma archivo generado
 ```
 
+# Explicación del código con `pthread`
+
+## Fragmento de código
+
+```c
+pthread_t t1, t2;                             // dos hilos
+
+pthread_create(&t1, NULL, tarea, NULL);       // crea hilo 1
+pthread_create(&t2, NULL, tarea, NULL);       // crea hilo 2
+
+pthread_join(t1, NULL);                       // espera hilo 1
+pthread_join(t2, NULL);                       // espera hilo 2
+```
+
+---
+
+## ¿Qué hace este código?
+
+Este fragmento crea **dos hilos de ejecución** (`t1` y `t2`) dentro del mismo proceso.  
+Ambos hilos ejecutan la misma función llamada `tarea`.
+
+Después de crearlos, el programa principal **se detiene a esperar** a que ambos terminen antes de continuar o finalizar.
+
+En otras palabras:
+
+1. Se declaran dos variables para identificar dos hilos.
+2. Se crea el primer hilo.
+3. Se crea el segundo hilo.
+4. El hilo principal espera a que termine el primero.
+5. El hilo principal espera a que termine el segundo.
+
+---
+
+## Explicación línea por línea
+
+### 1. Declaración de los hilos
+
+```c
+pthread_t t1, t2;
+```
+
+- `pthread_t` es el tipo de dato que utiliza la biblioteca POSIX Threads para representar un hilo.
+- `t1` y `t2` son variables que almacenarán el identificador de cada hilo creado.
+- Aquí **todavía no existen los hilos**; solo se están declarando las variables que los referenciarán.
+
+---
+
+### 2. Creación del primer hilo
+
+```c
+pthread_create(&t1, NULL, tarea, NULL);
+```
+
+Esta instrucción crea un nuevo hilo.
+
+#### Parámetros de `pthread_create`
+
+La función tiene esta forma general:
+
+```c
+pthread_create(&hilo, atributos, funcion, argumento);
+```
+
+En este caso:
+
+- `&t1`  
+  Guarda en `t1` el identificador del hilo recién creado.
+
+- `NULL`  
+  Indica que el hilo se crea con los **atributos por defecto**.
+
+- `tarea`  
+  Es la función que ejecutará el nuevo hilo.
+
+- `NULL`  
+  Es el argumento que se le pasa a la función `tarea`.  
+  En este caso no se envía información adicional.
+
+#### Resultado
+
+Al ejecutarse esta línea:
+
+- nace un nuevo hilo;
+- el nuevo hilo comienza a ejecutar la función `tarea`;
+- el hilo principal **no se detiene necesariamente aquí**: puede seguir ejecutando la siguiente instrucción mientras el nuevo hilo corre en paralelo.
+
+---
+
+### 3. Creación del segundo hilo
+
+```c
+pthread_create(&t2, NULL, tarea, NULL);
+```
+
+Hace exactamente lo mismo que la línea anterior, pero ahora crea un segundo hilo y guarda su identificador en `t2`.
+
+#### Importante
+
+Ahora existen **dos hilos concurrentes** ejecutando la misma función `tarea`:
+
+- hilo `t1`
+- hilo `t2`
+
+Además, también sigue existiendo el **hilo principal** (`main`).
+
+Eso significa que, en total, el proceso puede tener **tres flujos de ejecución activos**:
+
+- el hilo principal,
+- el hilo 1,
+- el hilo 2.
+
+---
+
+## ¿Los hilos se ejecutan en orden?
+
+No necesariamente.
+
+Aunque el código crea primero `t1` y luego `t2`, **el sistema operativo decide cuándo corre cada hilo**.  
+Por eso:
+
+- `t1` podría avanzar más rápido,
+- `t2` podría imprimir primero,
+- ambos podrían intercalarse.
+
+Si la función `tarea` imprime texto en pantalla, es normal que las salidas aparezcan mezcladas.
+
+---
+
+## 4. Esperar a que termine el primer hilo
+
+```c
+pthread_join(t1, NULL);
+```
+
+`pthread_join` hace que el hilo que llama a esta función (normalmente el hilo principal) **espere** hasta que el hilo indicado termine.
+
+En este caso:
+
+- el hilo principal se bloquea
+- hasta que `t1` finalice su ejecución
+
+El segundo parámetro es `NULL`, lo que significa que **no se recupera el valor de retorno** del hilo.
+
+---
+
+## 5. Esperar a que termine el segundo hilo
+
+```c
+pthread_join(t2, NULL);
+```
+
+Hace lo mismo, pero ahora espera a que termine `t2`.
+
+Con esto se garantiza que el programa principal **no termine antes que los hilos**.
+
+---
+
+## Idea general del flujo
+
+El comportamiento global es este:
+
+```text
+main inicia
+   |
+   |-- crea t1  ------> t1 ejecuta tarea
+   |
+   |-- crea t2  ------> t2 ejecuta tarea
+   |
+   |-- espera a t1
+   |
+   |-- espera a t2
+   |
+main continúa / termina
+```
+
+---
+
+## ¿Para qué sirve `pthread_join`?
+
+Sirve para sincronizar el final de los hilos.
+
+Si no se usara `pthread_join`, puede ocurrir que:
+
+- el `main` termine muy rápido,
+- el proceso finalice,
+- y los hilos no alcancen a completar su trabajo.
+
+Por eso, `pthread_join` es una forma de decir:
+
+> “No continúes hasta que este hilo haya terminado”.
+
+---
+
+## ¿Qué requisito debe cumplir `tarea`?
+
+La función que ejecuta un hilo con `pthread_create` debe tener esta forma:
+
+```c
+void *tarea(void *arg);
+```
+
+Esto significa:
+
+- devuelve un `void *`
+- recibe un argumento de tipo `void *`
+
+Ejemplo mínimo:
+
+```c
+void *tarea(void *arg) {
+    printf("Hola desde un hilo\n");
+    return NULL;
+}
+```
+
+---
+
+## ¿Qué conceptos pueden observar los alumnos con este código?
+
+Este fragmento permite enseñar varios conceptos importantes:
+
+### 1. Creación de hilos
+Cómo un proceso puede tener varios flujos de ejecución al mismo tiempo.
+
+### 2. Concurrencia
+Los hilos pueden avanzar “a la vez” o intercalarse.
+
+### 3. No determinismo
+El orden exacto de ejecución puede cambiar en cada corrida.
+
+### 4. Sincronización básica
+`pthread_join` permite esperar a que un hilo termine.
+
+---
+
+## Lo que este código **sí hace**
+
+- crea dos hilos;
+- ambos ejecutan la misma función;
+- el hilo principal espera a que ambos terminen.
+
+---
+
+## Lo que este código **no hace**
+
+Este fragmento **no protege variables compartidas**.
+
+Si la función `tarea` modifica una variable global compartida, puede haber condiciones de carrera si no se usan mecanismos adicionales, como:
+
+- mutex,
+- semáforos,
+- variables de condición.
+
+Es decir, `pthread_join` **espera el final**, pero **no evita conflictos durante la ejecución concurrente**.
+
+---
+
+## Explicación breve para poner en el laboratorio
+
+Puedes usar este texto directamente:
+
+> Este código crea dos hilos (`t1` y `t2`) usando la biblioteca `pthread`. Ambos hilos ejecutan la misma función llamada `tarea`. Después de crearlos, el hilo principal usa `pthread_join` para esperar a que ambos terminen antes de continuar. Esto permite observar concurrencia, ya que los dos hilos pueden ejecutarse de forma intercalada, y también muestra una forma básica de sincronización al final de su ejecución.
+
+---
+
+## Resumen final
+
+En resumen, este código:
+
+- declara dos identificadores de hilo;
+- crea dos hilos que ejecutan la función `tarea`;
+- deja que ambos trabajen concurrentemente;
+- espera a que ambos finalicen antes de que el programa continúe o termine.
+
+Es un ejemplo básico y muy útil para introducir a los alumnos en el uso de hilos POSIX en C.
+
+
+
+
 ---
