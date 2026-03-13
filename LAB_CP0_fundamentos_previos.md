@@ -13,7 +13,6 @@ Todos los archivos de evidencia deben guardarse en `~/lab_cp0/evidencia/` y **de
 
 > **Regla:** No uses interfaz gráfica para crear/editar archivos (solo para abrir la terminal).
 
-```
 
 Al final:
 
