@@ -16,6 +16,7 @@ Todos los archivos de evidencia deben guardarse en `~/lab_cp0/evidencia/` y **de
 ```
 
 Al final:
+
 ```bash
 tar -czf lab_cp0_02XXXXX.tar.gz evidencia
 ```
