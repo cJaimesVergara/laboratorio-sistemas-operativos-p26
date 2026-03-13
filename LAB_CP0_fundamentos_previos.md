@@ -264,6 +264,8 @@ Los hilos comparten memoria de forma natural porque viven dentro del mismo proce
 
 > void* tarea(void* arg) { } define una función llamada tarea con el formato requerido por pthread. Recibe un argumento genérico (arg) y devuelve un puntero genérico (void*).
 
+>El símbolo * significa “puntero”, es decir, una variable que guarda una dirección de memoria. Por eso void* significa “puntero genérico”: una dirección que puede apuntar a cualquier tipo de dato. En pthread, se usa para que la función del hilo pueda recibir argumentos de distintos tipos con un mismo formato.
+
 ---
 
 ## Código base: `pthread_demo.c`
